@@ -27,3 +27,13 @@ function startTimer() {
 function stopTimer() {
   clearInterval(timer);
 }
+const defaultTimers = [5, 10, 15, 20, 25];
+
+defaultTimers.forEach(time => {
+  const btn = document.createElement("button");
+  btn.innerHTML = `${time} minutes`;
+  btn.addEventListener("click", () => {
+    input.value = time;
+  });
+  document.body.appendChild(btn);
+});
