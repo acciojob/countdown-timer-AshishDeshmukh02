@@ -1,48 +1,29 @@
-const app = require('./index.js');
 const input = document.querySelector("input");
 const timerDisplay = document.querySelector("#timer");
-const defaultTimers = document.querySelectorAll(".default-timer");
+const startBtn = document.querySelector("#startBtn");
+const stopBtn = document.querySelector("#stopBtn");
 
-let countdown;
+let timer;
+let time = 0;
 
-function startTimer(duration, display) {
-  let timer = duration, minutes, seconds;
-  countdown = setInterval(function() {
-    minutes = parseInt(timer / 60, 10);
-    seconds = parseInt(timer % 60, 10);
+startBtn.addEventListener("click", startTimer);
+stopBtn.addEventListener("click", stopTimer);
 
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
+function startTimer() {
+  time = input.value * 60;
+  timer = setInterval(() => {
+    time--;
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    timerDisplay.innerHTML = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
 
-    display.textContent = minutes + ":" + seconds;
-
-    if (--timer < 0) {
-      clearInterval(countdown);
-      display.textContent = "Time's up!";
+    if (time <= 0) {
+      stopTimer();
+      timerDisplay.innerHTML = "Time's up!";
     }
   }, 1000);
 }
 
-input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-    clearInterval(countdown);
-    let minutes = parseInt(input.value) || 0;
-    let endTime = new Date(new Date().getTime() + minutes * 60 * 1000);
-    timerDisplay.textContent = "Ends at: " + endTime.toLocaleTimeString();
-    startTimer(minutes * 60, timerDisplay);
-  }
-});
-
-defaultTimers.forEach(function(defaultTimer) {
-  defaultTimer.addEventListener("click", function() {
-    clearInterval(countdown);
-    let minutes = parseInt(defaultTimer.dataset.time) || 0;
-    let endTime = new Date(new Date().getTime() + minutes * 60 * 1000);
-    timerDisplay.textContent = "Ends at: " + endTime.toLocaleTimeString();
-    startTimer(minutes * 60, timerDisplay);
-  });
-});
-
-app.listen(3000, () => {
-  console.log('server started');
-});
+function stopTimer() {
+  clearInterval(timer);
+}
